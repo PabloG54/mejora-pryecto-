@@ -2,7 +2,7 @@
  ## Integrante:
 
 Samuel Galviz Cartagena — *Usuario GitHub: [@GalvizGit]
-Pablo Alejandro Gaviria — *Usuario GitHub: [@NAnay576]
+Pablo Alejandro Gaviria — *Usuario GitHub: [@PabloG54]
 ---
 
 ## Descripción de la Problemática y Solución
