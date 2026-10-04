@@ -7,57 +7,70 @@
     <!-- Bootstrap 5 CSS e Iconos -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .nav-tabs .nav-link {
+            color: #6c757d;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 0.5rem;
+        }
+        .nav-tabs .nav-link.active {
+            color: #212529;
+            border-bottom: 2px solid #212529;
+            font-weight: 600;
+            background: transparent;
+        }
+        .wireframe-box {
+            border: 2px dashed #ced4da;
+            border-radius: 8px;
+            min-height: 260px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #adb5bd;
+        }
+    </style>
 </head>
 <body class="bg-light">
 
-    <div class="d-flex" id="wrapper">
-        <!-- Sidebar Navigation -->
-        <div class="bg-dark text-white p-3 min-vh-100" style="width: 250px;">
-            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                <i class="bi bi-shield-check fs-4 me-2 text-danger"></i>
-                <span class="fs-5 fw-bold">SAAT Retención</span>
-            </a>
-            <hr>
-            <ul class="nav nav-pills flex-column mb-auto">
+    <!-- Encabezado Superior y Navegación por Pestañas -->
+    <header class="bg-white border-bottom shadow-sm mb-4">
+        <div class="container-fluid px-4 pt-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-light rounded border p-2 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                        <i class="bi bi-square text-secondary fs-6"></i>
+                    </div>
+                    <span class="fw-bold fs-5 text-dark">SAAT</span>
+                </div>
+                <span class="text-muted small">Wireframe</span>
+            </div>
+
+            <!-- Menú de Pestañas -->
+            <ul class="nav nav-tabs border-0 gap-4 fs-6">
                 <li class="nav-item">
-                    <a href="{{ route('dashboard') }}" class="nav-link text-white active">
-                        <i class="bi bi-speedometer2 me-2"></i> Dashboard
-                    </a>
+                    <a class="nav-link active px-1" href="{{ route('dashboard') }}">Dashboard</a>
                 </li>
-                <li>
-                    <a href="#" class="nav-link text-white">
-                        <i class="bi bi-exclamation-triangle me-2"></i> Centro de Alertas
-                    </a>
+                <li class="nav-item">
+                    <a class="nav-link px-1" href="#">Centro de Alertas</a>
                 </li>
-                <li>
-                    <a href="#" class="nav-link text-white">
-                        <i class="bi bi-person-vcard me-2"></i> Ficha Estudiante 360°
-                    </a>
+                <li class="nav-item">
+                    <a class="nav-link px-1" href="#">Ficha 360°</a>
                 </li>
-                <li>
-                    <a href="#" class="nav-link text-white">
-                        <i class="bi bi-journal-plus me-2"></i> Intervenciones
-                    </a>
+                <li class="nav-item">
+                    <a class="nav-link px-1" href="#">Intervención</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-1" href="#">Analítica</a>
                 </li>
             </ul>
         </div>
+    </header>
 
-        <div class="w-100">
-            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-4">
-                <div class="container-fluid p-0">
-                    <span class="navbar-brand mb-0 h1 fs-6">Sistema de Acompañamiento y Alertas Tempranas</span>
-                    <div class="d-flex align-items-center">
-                        <span class="me-3 small text-muted">Prof. Docente</span>
-                        <i class="bi bi-person-circle fs-4"></i>
-                    </div>
-                </div>
-            </nav>
-
-            <main class="p-4">
-                @yield('content')
-            </main>
-        </div>
-    </div>
+    <!-- Contenido Dinámico de la Vista -->
+    <main class="container-fluid px-4 pb-5">
+        @yield('content')
+    </main>
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
