@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('student_activities', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::create('courses', function (Blueprint $table) {
+            $table->id('id_asignatura');
+            $table->string('codigo_asig', 20)->unique();
+            $table->string('nombre_asig', 120);
+            $table->string('programa_academico', 80);
+            $table->unsignedTinyInteger('creditos');
         });
     }
 
@@ -22,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('student_activities');
+        Schema::dropIfExists('courses');
     }
 };

@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('academic_requests', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::create('teachers', function (Blueprint $table) {
+            $table->id('id_profesor');
+            $table->foreignId('id_usuario')->unique()->constrained('users', 'id_usuario')->restrictOnDelete();
+            $table->string('departamento', 80);
+            $table->string('facultad', 80);
         });
     }
 
@@ -22,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('academic_requests');
+        Schema::dropIfExists('teachers');
     }
 };
