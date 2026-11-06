@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('courses', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::create('academic_periods', function (Blueprint $table) {
+            $table->id('id_periodo');
+            $table->string('nombre_periodo', 30)->unique();
+            $table->date('fecha_inicio');
+            $table->date('fecha_fin');
         });
     }
 
@@ -22,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('courses');
+        Schema::dropIfExists('academic_periods');
     }
 };
