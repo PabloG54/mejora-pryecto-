@@ -109,6 +109,20 @@ class CrudApiTest extends TestCase
             ->assertJsonValidationErrors(['fecha_sesion']);
     }
 
+    public function test_user_factory_uses_only_real_user_columns_and_hashes_password(): void
+    {
+        $user = User::factory()->create();
+
+        $this->assertNotEmpty($user->correo_inst);
+        $this->assertSame('estudiante', $user->rol);
+        $this->assertSame('activo', $user->estado);
+        $this->assertTrue(Hash::check('password', $user->contrasena));
+        $this->assertArrayNotHasKey('name', $user->getAttributes());
+        $this->assertArrayNotHasKey('email', $user->getAttributes());
+        $this->assertArrayNotHasKey('remember_token', $user->getAttributes());
+        $this->assertArrayNotHasKey('email_verified_at', $user->getAttributes());
+    }
+
     public function test_course_can_be_created_read_updated_and_deleted(): void
     {
         $this->authenticate();
