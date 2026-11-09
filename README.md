@@ -14,7 +14,11 @@ La deserción universitaria responde a factores multidimensionales (académicos,
 "SAAT" es una plataforma web centralizada diseñada para automatizar la detección de alertas tempranas en estudiantes con riesgo de deserción, gestionar la Ficha 360° con el historial académico/psicosocial del alumno y agilizar la programación, canalización y seguimiento de intervenciones oportunas por parte del equipo docente y de bienestar.
 
 ##  Documento de Análisis y Diseño
-El documento conceptual completo con los requisitos funcionales, el Diagrama Entidad-Relación normalizado, el mapa de navegación y los wireframes de la aplicación se encuentra disponible en:
+Este documento sirve como soporte para evidenciar la forma en que abordamos la problemática del proyecto y respalda todo el proceso de construcción de la aplicación web. Es un recurso dinámico que se actualiza de manera constante acorde a los cambios y avances técnicos que realizamos. 
+
+En esta etapa, el documento evidencia nuestra fase de desarrollo backend, incluyendo la implementación de la base de datos, la configuración de los modelos, la definición de sus relaciones y la estructuración de las operaciones CRUD.
+
+El documento conceptual completo, que también incluye los requisitos funcionales, el Diagrama Entidad-Relación normalizado, el mapa de navegación y los wireframes de la aplicación, se encuentra disponible en el siguiente enlace:
 
 (https://docs.google.com/document/d/1vwUPjhNx4w-iRkppgS7aH6lXTPbl_n0sxUM_2I4ulEU/edit?usp=sharing)
 
@@ -65,10 +69,6 @@ mediante sesión con el guard `web` (`auth`). Los endpoints también se pueden p
 con solicitudes JSON. Los formularios muestran requisitos y errores junto al
 campo correspondiente en español. Los campos de fecha usan solo `AAAA-MM-DD`,
 sin hora.
-
-El texto de equivalencias del modelo de datos, mapa de navegación y tabla de
-CRUD para incorporar al documento de análisis y diseño está en
-[`docs/corte2-analisis-diseno.md`](./docs/corte2-analisis-diseno.md).
 
 En un entorno local recién migrado, visita `/setup` para crear la primera
 cuenta de coordinación. El asistente solo funciona en `local` o `testing` y
