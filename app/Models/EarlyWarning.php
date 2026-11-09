@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class EarlyWarning extends Model
 {
-    protected $table = 'alerta_temprana';
+    protected $table = 'early_warnings';
     protected $primaryKey = 'id_alerta';
     public $timestamps = false;
 

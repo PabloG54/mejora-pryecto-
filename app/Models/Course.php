@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Course extends Model
 {
-    protected $table = 'asignatura';
+    protected $table = 'courses';
     protected $primaryKey = 'id_asignatura';
     public $timestamps = false;
 

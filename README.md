@@ -52,6 +52,63 @@ Bash
 php artisan serve
 npm run dev
 
+## Interfaz web y rutas CRUD
+
+Después de iniciar sesión, visita `/manage` para probar todos los CRUD desde
+la interfaz web. Permite cambiar de recurso, paginar, ver detalles, crear,
+editar y eliminar registros; las relaciones se cargan en listas desplegables.
+Las intervenciones de seguimiento son inmutables: solo se pueden consultar y
+crear.
+
+Las rutas CRUD están definidas en `routes/web.php` y requieren autenticación
+mediante `auth:sanctum`. Los endpoints también se pueden probar directamente
+con solicitudes JSON. Los formularios muestran requisitos y errores junto al
+campo correspondiente en español. Los campos de fecha usan solo `AAAA-MM-DD`,
+sin hora.
+
+En un entorno local recién migrado, visita `/setup` para crear la primera
+cuenta de coordinación. El asistente solo funciona en `local` o `testing` y
+cuando aún no existen usuarios. En otras circunstancias, usa las credenciales
+de una cuenta existente en `/login`.
+
+### Datos de demostración
+
+Ejecuta `php artisan db:seed` en local para cargar datos enlazados en todas las
+áreas. El seeder es repetible, no borra otros registros y está bloqueado fuera
+de `local` y `testing`.
+
+Se crean tres cuentas por rol:
+
+- Estudiantes: `estudiante01@saat.test`, `estudiante02@saat.test`, `estudiante03@saat.test`
+- Profesores: `profesor01@saat.test`, `profesor02@saat.test`, `profesor03@saat.test`
+- Coordinadores: `coordinador01@saat.test`, `coordinador02@saat.test`, `coordinador03@saat.test`
+
+La contraseña de estas cuentas es `DemoSAAT2026!`. Tres usuarios estudiante y
+tres profesores tienen perfiles enlazados; las cuentas de coordinación solo
+tienen el registro de usuario. Los datos asociados incluyen periodos,
+asignaturas, actividades, solicitudes, matrículas, alertas e intervenciones.
+
+| Recurso | Endpoint |
+|---|---|
+| Periodos académicos | `/academic-periods` |
+| Asignaturas | `/courses` |
+| Estudiantes | `/students` |
+| Profesores | `/teachers` |
+| Actividades estudiantiles | `/student-activities` |
+| Solicitudes académicas | `/academic-requests` |
+| Matrículas | `/tuitions` |
+| Alertas tempranas | `/early-warnings` |
+| Intervenciones de seguimiento | `/followup-interventions` |
+| Usuarios | `/users` |
+
+Salvo las intervenciones, cada recurso ofrece `GET` para listar, `POST` para
+crear, `GET /{id}` para consultar, `PUT/PATCH /{id}` para actualizar y
+`DELETE /{id}` para eliminar. Las intervenciones solo permiten listar, crear y
+consultar: el historial es inmutable (RNF04). Los listados se paginan de 15 en
+15. La validación devuelve `422`; una eliminación bloqueada por registros
+relacionados devuelve `409`. Las contraseñas se almacenan mediante hash y los
+datos de salud mantienen el cifrado configurado en el modelo.
+
 Ramas de Trabajo
 Para mantener un flujo de desarrollo ordenado, utilizaremos las siguientes ramas:
 
@@ -73,9 +130,4 @@ style: Cambios visuales, CSS o plantilla Blade.
 docs: Documentación o cambios en el README.
 
 chore: Configuraciones iniciales o dependencias.
-
-
-
-
-
 

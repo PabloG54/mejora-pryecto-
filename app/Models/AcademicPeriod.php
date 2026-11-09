@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AcademicPeriod extends Model
 {
-    protected $table = 'periodo_academico';
+    protected $table = 'academic_periods';
     protected $primaryKey = 'id_periodo';
     public $timestamps = false;
 
@@ -26,5 +26,15 @@ class AcademicPeriod extends Model
     public function alertas()
     {
         return $this->hasMany(EarlyWarning::class, 'id_periodo', 'id_periodo');
+    }
+
+    public function actividades()
+    {
+        return $this->hasMany(StudentActivity::class, 'id_periodo', 'id_periodo');
+    }
+
+    public function solicitudes()
+    {
+        return $this->hasMany(AcademicRequest::class, 'id_periodo', 'id_periodo');
     }
 }

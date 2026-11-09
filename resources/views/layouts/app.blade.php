@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>SAAT - Sistema de Retención Estudiantil</title>
     <!-- Bootstrap 5 CSS e Iconos -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -43,7 +44,17 @@
                     </div>
                     <span class="fw-bold fs-5 text-dark">SAAT</span>
                 </div>
-                <span class="text-muted small">Wireframe</span>
+                <div class="d-flex align-items-center gap-3">
+                    @auth
+                        <span class="text-muted small">{{ auth()->user()->correo_inst }}</span>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button class="btn btn-sm btn-outline-secondary" type="submit">Cerrar sesión</button>
+                        </form>
+                    @else
+                        <a class="btn btn-sm btn-outline-primary" href="{{ route('login') }}">Iniciar sesión</a>
+                    @endauth
+                </div>
             </div>
 
             <!-- Menú de Pestañas -->
@@ -52,16 +63,7 @@
                     <a class="nav-link active px-1" href="{{ route('dashboard') }}">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link px-1" href="#">Centro de Alertas</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link px-1" href="#">Ficha 360°</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link px-1" href="#">Intervención</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link px-1" href="#">Analítica</a>
+                    <a class="nav-link px-1" href="{{ auth()->check() ? route('crud.index') : route('login') }}">Gestión CRUD</a>
                 </li>
             </ul>
         </div>

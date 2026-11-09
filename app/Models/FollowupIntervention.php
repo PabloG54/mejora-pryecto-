@@ -8,7 +8,7 @@ use LogicException;
 
 class FollowupIntervention extends Model
 {
-    protected $table = 'intervencion_seguimiento';
+    protected $table = 'followup_interventions';
     protected $primaryKey = 'id_intervencion';
     public $timestamps = false;
 

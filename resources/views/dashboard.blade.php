@@ -2,7 +2,17 @@
 
 @section('content')
 <div class="container-fluid p-0">
-    <h2 class="fw-bold fs-4 mb-4 text-dark">Dashboard</h2>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold fs-4 mb-1 text-dark">SAAT</h2>
+            <p class="text-secondary mb-0">Sistema de alerta y acompañamiento estudiantil.</p>
+        </div>
+        @auth
+            <a class="btn btn-primary" href="{{ route('crud.index') }}">Abrir gestión CRUD</a>
+        @else
+            <a class="btn btn-primary" href="{{ route('login') }}">Iniciar sesión para probar</a>
+        @endauth
+    </div>
 
     <!-- Fila de 4 Tarjetas Métricas -->
     <div class="row g-3 mb-4">
@@ -10,7 +20,7 @@
             <div class="card border-0 shadow-sm h-100 p-2">
                 <div class="card-body">
                     <h6 class="text-uppercase text-secondary fw-bold small mb-3">ESTUDIANTES</h6>
-                    <div class="bg-secondary bg-opacity-20 rounded py-3 px-2 w-50"></div>
+                    <a class="btn btn-outline-primary" href="{{ auth()->check() ? route('crud.index', ['resource' => 'students']) : route('login') }}">Abrir estudiantes</a>
                 </div>
             </div>
         </div>
@@ -18,7 +28,7 @@
             <div class="card border-0 shadow-sm h-100 p-2">
                 <div class="card-body">
                     <h6 class="text-uppercase text-secondary fw-bold small mb-3">ALERTAS ACTIVAS</h6>
-                    <div class="bg-secondary bg-opacity-20 rounded py-3 px-2 w-50"></div>
+                    <a class="btn btn-outline-primary" href="{{ auth()->check() ? route('crud.index', ['resource' => 'early-warnings']) : route('login') }}">Ver alertas</a>
                 </div>
             </div>
         </div>
@@ -26,7 +36,7 @@
             <div class="card border-0 shadow-sm h-100 p-2">
                 <div class="card-body">
                     <h6 class="text-uppercase text-secondary fw-bold small mb-3">RIESGO ALTO</h6>
-                    <div class="bg-secondary bg-opacity-20 rounded py-3 px-2 w-50"></div>
+                    <a class="btn btn-outline-primary" href="{{ auth()->check() ? route('crud.index', ['resource' => 'early-warnings']) : route('login') }}">Ver riesgo</a>
                 </div>
             </div>
         </div>
@@ -34,7 +44,7 @@
             <div class="card border-0 shadow-sm h-100 p-2">
                 <div class="card-body">
                     <h6 class="text-uppercase text-secondary fw-bold small mb-3">INTERVENCIONES</h6>
-                    <div class="bg-secondary bg-opacity-20 rounded py-3 px-2 w-50"></div>
+                    <a class="btn btn-outline-primary" href="{{ auth()->check() ? route('crud.index', ['resource' => 'followup-interventions']) : route('login') }}">Ver intervenciones</a>
                 </div>
             </div>
         </div>

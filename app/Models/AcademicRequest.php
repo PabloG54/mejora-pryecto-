@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AcademicRequest extends Model
 {
-    protected $table = 'solicitud_academica';
+    protected $table = 'academic_requests';
     protected $primaryKey = 'id_solicitud';
     public $timestamps = false;
 
