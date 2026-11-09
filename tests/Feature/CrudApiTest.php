@@ -27,6 +27,14 @@ class CrudApiTest extends TestCase
         $this->getJson('/students')->assertUnauthorized();
     }
 
+    public function test_management_routes_use_the_web_auth_middleware(): void
+    {
+        $middleware = app('router')->getRoutes()->getByName('crud.index')->gatherMiddleware();
+
+        $this->assertContains('auth', $middleware);
+        $this->assertNotContains('auth:sanctum', $middleware);
+    }
+
     public function test_course_can_be_created_read_updated_and_deleted(): void
     {
         $this->authenticate();
@@ -386,6 +394,6 @@ class CrudApiTest extends TestCase
             'estado' => 'activo',
         ]);
 
-        $this->actingAs($user, 'sanctum');
+        $this->actingAs($user, 'web');
     }
 }

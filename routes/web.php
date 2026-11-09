@@ -22,7 +22,7 @@ Route::post('/login', [SessionController::class, 'store'])->middleware('throttle
 Route::get('/setup', [SessionController::class, 'setup'])->name('setup');
 Route::post('/setup', [SessionController::class, 'storeSetup'])->middleware('throttle:5,1');
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/manage', fn () => view('crud.index'))->name('crud.index');
     Route::post('/logout', [SessionController::class, 'destroy'])->name('logout');
     Route::apiResource('academic-periods', AcademicPeriodController::class);

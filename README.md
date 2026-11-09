@@ -61,7 +61,7 @@ Las intervenciones de seguimiento son inmutables: solo se pueden consultar y
 crear.
 
 Las rutas CRUD están definidas en `routes/web.php` y requieren autenticación
-mediante `auth:sanctum`. Los endpoints también se pueden probar directamente
+mediante sesión con el guard `web` (`auth`). Los endpoints también se pueden probar directamente
 con solicitudes JSON. Los formularios muestran requisitos y errores junto al
 campo correspondiente en español. Los campos de fecha usan solo `AAAA-MM-DD`,
 sin hora.
@@ -130,4 +130,3 @@ style: Cambios visuales, CSS o plantilla Blade.
 docs: Documentación o cambios en el README.
 
 chore: Configuraciones iniciales o dependencias.
-
