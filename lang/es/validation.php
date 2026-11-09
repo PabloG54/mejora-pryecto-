@@ -2,6 +2,7 @@
 
 return [
     'after_or_equal' => 'El campo :attribute debe ser una fecha igual o posterior a :date.',
+    'before_or_equal' => 'El campo :attribute debe ser una fecha igual o anterior a :date.',
     'between' => [
         'numeric' => 'El campo :attribute debe estar entre :min y :max.',
         'string' => 'El campo :attribute debe tener entre :min y :max caracteres.',

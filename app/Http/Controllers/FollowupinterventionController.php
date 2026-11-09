@@ -14,14 +14,7 @@ class FollowupinterventionController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'id_alerta' => ['required', 'integer', 'exists:early_warnings,id_alerta'],
-            'id_profesor' => ['required', 'integer', 'exists:teachers,id_profesor'],
-            'fecha_sesion' => ['required', 'date_format:Y-m-d'],
-            'tipo_intervencion' => ['required', 'in:tutoria,llamada,citacion,remision,otra'],
-            'observaciones' => ['nullable', 'string'],
-            'compromisos' => ['nullable', 'string'],
-        ]);
+        $data = $request->validate($this->rules());
 
         return response()->json(FollowupIntervention::create($data)->load(['alerta.estudiante', 'profesor.usuario']), 201);
     }
@@ -29,5 +22,17 @@ class FollowupinterventionController extends Controller
     public function show(string $id)
     {
         return FollowupIntervention::with(['alerta.estudiante.usuario', 'profesor.usuario'])->findOrFail($id);
+    }
+
+    private function rules(): array
+    {
+        return [
+            'id_alerta' => ['required', 'integer', 'exists:early_warnings,id_alerta'],
+            'id_profesor' => ['required', 'integer', 'exists:teachers,id_profesor'],
+            'fecha_sesion' => ['required', 'date_format:Y-m-d', 'before_or_equal:today'],
+            'tipo_intervencion' => ['required', 'in:tutoria,llamada,citacion,remision,otra'],
+            'observaciones' => ['nullable', 'string'],
+            'compromisos' => ['nullable', 'string'],
+        ];
     }
 }

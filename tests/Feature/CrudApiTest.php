@@ -59,6 +59,56 @@ class CrudApiTest extends TestCase
             ->assertJsonValidationErrors(['puntaje_saber11']);
     }
 
+    public function test_intervention_session_date_cannot_be_in_the_future(): void
+    {
+        $this->authenticate();
+
+        $teacherUser = User::create([
+            'correo_inst' => 'session-teacher@example.edu',
+            'contrasena' => Hash::make('secure-pass-123'),
+            'rol' => 'profesor',
+            'estado' => 'activo',
+        ]);
+        $teacher = Teacher::create([
+            'id_usuario' => $teacherUser->id_usuario,
+            'departamento' => 'Pruebas',
+            'facultad' => 'Pruebas',
+        ]);
+        $studentUser = User::create([
+            'correo_inst' => 'session-student@example.edu',
+            'contrasena' => Hash::make('secure-pass-123'),
+            'rol' => 'estudiante',
+            'estado' => 'activo',
+        ]);
+        $student = Student::create([
+            'id_usuario' => $studentUser->id_usuario,
+            'codigo_estud' => 'STUDENT-SESSION',
+            'doc_identidad' => 'DOC-SESSION',
+            'nombres' => 'Demo',
+            'apellidos' => 'Sesion',
+        ]);
+        $period = AcademicPeriod::create([
+            'nombre_periodo' => 'PERIOD-SESSION',
+            'fecha_inicio' => now()->toDateString(),
+            'fecha_fin' => now()->addMonths(4)->toDateString(),
+        ]);
+        $warning = EarlyWarning::create([
+            'id_estudiante' => $student->id_estudiante,
+            'id_periodo' => $period->id_periodo,
+            'tipo_riesgo' => 'academico',
+            'nivel_riesgo' => 'medio',
+            'fecha_reporte' => now()->toDateString(),
+        ]);
+
+        $this->postJson('/followup-interventions', [
+            'id_alerta' => $warning->id_alerta,
+            'id_profesor' => $teacher->id_profesor,
+            'fecha_sesion' => now()->addDay()->toDateString(),
+            'tipo_intervencion' => 'tutoria',
+        ])->assertUnprocessable()
+            ->assertJsonValidationErrors(['fecha_sesion']);
+    }
+
     public function test_course_can_be_created_read_updated_and_deleted(): void
     {
         $this->authenticate();
