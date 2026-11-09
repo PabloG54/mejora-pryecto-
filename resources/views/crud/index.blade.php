@@ -95,7 +95,7 @@
                 { name: 'nombres', label: 'Nombres', required: true, max: 80 },
                 { name: 'apellidos', label: 'Apellidos', required: true, max: 80 },
                 { name: 'colegio_origen', label: 'Colegio de origen', max: 120 },
-                { name: 'puntaje_saber11', label: 'Puntaje Saber 11', type: 'number', min: 0, max: 65535 },
+                { name: 'puntaje_saber11', label: 'Puntaje Saber 11', type: 'number', min: 0, max: 500, step: 1 },
                 { name: 'prueba_admision', label: 'Puntaje de admisión', type: 'number', min: 0, max: 65535 },
                 { name: 'salud_fisica_mental', label: 'Salud física y mental', type: 'textarea' },
             ],

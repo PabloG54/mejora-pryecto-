@@ -22,7 +22,7 @@ class StudentController extends Controller
             'nombres' => ['required', 'string', 'max:80'],
             'apellidos' => ['required', 'string', 'max:80'],
             'colegio_origen' => ['nullable', 'string', 'max:120'],
-            'puntaje_saber11' => ['nullable', 'integer', 'between:0,65535'],
+            'puntaje_saber11' => ['nullable', 'integer', 'between:0,500'],
             'prueba_admision' => ['nullable', 'integer', 'between:0,65535'],
             'salud_fisica_mental' => ['nullable', 'string'],
         ]);
@@ -46,7 +46,7 @@ class StudentController extends Controller
             'nombres' => ['sometimes', 'required', 'string', 'max:80'],
             'apellidos' => ['sometimes', 'required', 'string', 'max:80'],
             'colegio_origen' => ['sometimes', 'nullable', 'string', 'max:120'],
-            'puntaje_saber11' => ['sometimes', 'nullable', 'integer', 'between:0,65535'],
+            'puntaje_saber11' => ['sometimes', 'nullable', 'integer', 'between:0,500'],
             'prueba_admision' => ['sometimes', 'nullable', 'integer', 'between:0,65535'],
             'salud_fisica_mental' => ['sometimes', 'nullable', 'string'],
         ]);

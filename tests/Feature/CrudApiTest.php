@@ -35,6 +35,30 @@ class CrudApiTest extends TestCase
         $this->assertNotContains('auth:sanctum', $middleware);
     }
 
+    public function test_saber11_score_is_limited_to_500_on_create_and_update(): void
+    {
+        $this->authenticate();
+
+        $userId = $this->postJson('/users', [
+            'correo_inst' => 'saber11@example.edu',
+            'contrasena' => 'secure-pass-123',
+            'rol' => 'estudiante',
+        ])->assertCreated()->json('id_usuario');
+
+        $studentId = $this->postJson('/students', [
+            'id_usuario' => $userId,
+            'codigo_estud' => 'EST-SABER11',
+            'doc_identidad' => 'DOC-SABER11',
+            'nombres' => 'Estudiante',
+            'apellidos' => 'Prueba',
+            'puntaje_saber11' => 500,
+        ])->assertCreated()->json('id_estudiante');
+
+        $this->patchJson("/students/{$studentId}", ['puntaje_saber11' => 501])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['puntaje_saber11']);
+    }
+
     public function test_course_can_be_created_read_updated_and_deleted(): void
     {
         $this->authenticate();
