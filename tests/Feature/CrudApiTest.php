@@ -247,7 +247,8 @@ class CrudApiTest extends TestCase
             'id_estudiante' => $studentId,
             'id_asignatura' => $courseId,
             'id_periodo' => $periodId,
-        ])->assertUnprocessable();
+        ])->assertUnprocessable()
+            ->assertJsonPath('errors.id_estudiante.0', 'El estudiante ya tiene esta asignatura matriculada en el periodo seleccionado.');
 
         $warningId = $this->postJson('/early-warnings', [
             'id_estudiante' => $studentId,
@@ -447,10 +448,10 @@ class CrudApiTest extends TestCase
             $response->assertSee($resource);
         }
 
-        $response->assertSee('readOnly: true')
-            ->assertSee('Editar')
-            ->assertSee('Eliminar')
-            ->assertSee('Nuevo registro');
+        $response->assertSee('canEditOrDelete: false')
+            ->assertSee('activeResource.canEditOrDelete !== false')
+            ->assertSee('Nuevo registro')
+            ->assertSee('Guardar');
     }
 
     public function test_demo_data_seeder_populates_all_resources_idempotently(): void

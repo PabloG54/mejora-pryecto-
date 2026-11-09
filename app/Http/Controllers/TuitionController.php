@@ -26,6 +26,8 @@ class TuitionController extends Controller
             'id_periodo' => ['required', 'integer', 'exists:academic_periods,id_periodo'],
             'nota_final' => ['nullable', 'numeric', 'decimal:0,1', 'between:0,5'],
             'estado_materia' => ['sometimes', 'required', 'in:inscrita,aprobada,reprobada,cancelada'],
+        ], [
+            'id_estudiante.unique' => 'El estudiante ya tiene esta asignatura matriculada en el periodo seleccionado.',
         ]);
 
         return response()->json(Tuition::create($data)->load(['estudiante', 'asignatura', 'periodo']), 201);
@@ -57,6 +59,8 @@ class TuitionController extends Controller
             'id_periodo' => ['required', 'integer', 'exists:academic_periods,id_periodo'],
             'nota_final' => ['sometimes', 'nullable', 'numeric', 'decimal:0,1', 'between:0,5'],
             'estado_materia' => ['sometimes', 'required', 'in:inscrita,aprobada,reprobada,cancelada'],
+        ], [
+            'id_estudiante.unique' => 'El estudiante ya tiene esta asignatura matriculada en el periodo seleccionado.',
         ]);
         $tuition->update($data);
 

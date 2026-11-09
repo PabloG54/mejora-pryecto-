@@ -27,6 +27,11 @@ return [
     'required' => 'El campo :attribute es obligatorio.',
     'string' => 'El campo :attribute debe ser texto.',
     'unique' => 'El valor de :attribute ya está registrado.',
+    'custom' => [
+        'id_estudiante' => [
+            'unique' => 'El estudiante ya tiene esta asignatura matriculada en el periodo seleccionado.',
+        ],
+    ],
     'attributes' => [
         'apellidos' => 'apellidos',
         'codigo_asig' => 'código de asignatura',

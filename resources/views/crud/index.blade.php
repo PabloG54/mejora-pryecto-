@@ -82,7 +82,7 @@
                 { name: 'codigo_asig', label: 'Código', required: true, max: 20 },
                 { name: 'nombre_asig', label: 'Nombre', required: true, max: 120 },
                 { name: 'programa_academico', label: 'Programa académico', required: true, max: 80 },
-                { name: 'creditos', label: 'Créditos', type: 'number', min: 0, max: 255, required: true },
+                { name: 'creditos', label: 'Créditos', type: 'number', min: 0, max: 255, step: 1, required: true },
             ],
         },
         students: {
@@ -96,7 +96,7 @@
                 { name: 'apellidos', label: 'Apellidos', required: true, max: 80 },
                 { name: 'colegio_origen', label: 'Colegio de origen', max: 120 },
                 { name: 'puntaje_saber11', label: 'Puntaje Saber 11', type: 'number', min: 0, max: 500, step: 1 },
-                { name: 'prueba_admision', label: 'Puntaje de admisión', type: 'number', min: 0, max: 65535 },
+                { name: 'prueba_admision', label: 'Puntaje de admisión', type: 'number', min: 0, max: 65535, step: 1 },
                 { name: 'salud_fisica_mental', label: 'Salud física y mental', type: 'textarea' },
             ],
         },
@@ -158,12 +158,12 @@
         },
         'followup-interventions': {
             label: 'Intervenciones de seguimiento', endpoint: '/followup-interventions', key: 'id_intervencion',
-            readOnly: true,
+            canEditOrDelete: false,
             columns: ['id_intervencion', 'id_alerta', 'id_profesor', 'fecha_sesion', 'tipo_intervencion'],
             fields: [
                 { name: 'id_alerta', label: 'Alerta', relation: 'early-warnings', required: true },
                 { name: 'id_profesor', label: 'Profesor', relation: 'teachers', required: true },
-                { name: 'fecha_sesion', label: 'Fecha de sesión', type: 'date', required: true },
+                { name: 'fecha_sesion', label: 'Fecha de sesión', type: 'date', required: true, maxDate: 'today' },
                 { name: 'tipo_intervencion', label: 'Tipo de intervención', type: 'select', required: true, options: ['tutoria', 'llamada', 'citacion', 'remision', 'otra'] },
                 { name: 'observaciones', label: 'Observaciones', type: 'textarea' },
                 { name: 'compromisos', label: 'Compromisos', type: 'textarea' },
@@ -204,6 +204,7 @@
         'early-warnings': item => `Alerta #${item.id_alerta} - ${item.tipo_riesgo} (${item.nivel_riesgo})`,
     };
     const dateFields = new Set(['fecha_inicio', 'fecha_fin', 'fecha_radicacion', 'fecha_reporte', 'fecha_sesion']);
+    const today = @json(now()->toDateString());
 
     const resourceSelect = document.getElementById('resource-select');
     const head = document.getElementById('table-head');
@@ -293,6 +294,8 @@
                 errors[field.name] = [`El valor máximo es ${field.max}.`];
             } else if (field.type === 'number' && field.step && input.validity.stepMismatch) {
                 errors[field.name] = [`Ingresa un valor en incrementos de ${field.step}.`];
+            } else if (field.type === 'date' && field.maxDate === 'today' && value > today) {
+                errors[field.name] = ['La fecha no puede ser posterior a hoy.'];
             } else if (field.name === 'contrasena' && value.length < (field.min || 0)) {
                 errors[field.name] = [`La contraseña debe tener al menos ${field.min} caracteres.`];
             }
@@ -385,6 +388,8 @@
         if (field.max) input.maxLength = field.max;
         if (field.min !== undefined && field.type !== 'number') input.minLength = field.min;
         if (field.max !== undefined && field.type === 'number') input.max = field.max;
+        if (field.min !== undefined && field.type === 'number') input.min = field.min;
+        if (field.maxDate === 'today') input.max = today;
         if (field.step) input.step = field.step;
         if (field.type === 'password' && editingId !== null) {
             input.placeholder = 'Deja vacío para conservar la contraseña';
@@ -409,16 +414,6 @@
                     option.textContent = value;
                     input.append(option);
                 });
-            }
-            if (field.relation) {
-                loadRelationOptions(field.relation).then(items => {
-                    items.forEach(item => {
-                        const option = document.createElement('option');
-                        option.value = getRelationValue(item, field);
-                        option.textContent = relationLabels[field.relation](item);
-                        input.append(option);
-                    });
-                }).catch(error => showMessage(error.message, 'danger'));
             }
             wrapper.replaceChild(input, wrapper.querySelector('input, textarea'));
         }
@@ -458,13 +453,32 @@
         return wrapper;
     }
 
-    function renderForm() {
-        fieldsContainer.replaceChildren(...activeResource.fields.map(renderInput));
-        document.getElementById('editor-title').textContent = editingId === null
-            ? `Crear ${activeResource.label.toLowerCase()}`
-            : `Editar ${activeResource.label.toLowerCase()} #${editingId}`;
-        document.getElementById('save-button').textContent = editingId === null ? 'Guardar' : 'Guardar cambios';
-        document.getElementById('cancel-edit-button').classList.toggle('d-none', editingId === null);
+    async function renderForm() {
+        const resource = activeResource;
+        const formEditingId = editingId;
+        const wrappers = resource.fields.map(renderInput);
+        await Promise.all(resource.fields.map(async (field, index) => {
+            if (!field.relation) return;
+            try {
+                const items = await loadRelationOptions(field.relation);
+                const input = wrappers[index].querySelector('select');
+                items.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = getRelationValue(item, field);
+                    option.textContent = relationLabels[field.relation](item);
+                    input.append(option);
+                });
+            } catch (error) {
+                showMessage(error.message, 'danger');
+            }
+        }));
+        if (resource !== activeResource || formEditingId !== editingId) return;
+        fieldsContainer.replaceChildren(...wrappers);
+        document.getElementById('editor-title').textContent = formEditingId === null
+            ? `Crear ${resource.label.toLowerCase()}`
+            : `Editar ${resource.label.toLowerCase()} #${formEditingId}`;
+        document.getElementById('save-button').textContent = formEditingId === null ? 'Guardar' : 'Guardar cambios';
+        document.getElementById('cancel-edit-button').classList.toggle('d-none', formEditingId === null);
     }
 
     function renderTableHeader() {
@@ -480,8 +494,6 @@
         actions.textContent = 'Acciones';
         head.append(actions);
         document.getElementById('records-title').textContent = activeResource.label;
-        document.getElementById('new-button').classList.toggle('d-none', Boolean(activeResource.readOnly));
-        document.getElementById('editor-card').classList.toggle('d-none', Boolean(activeResource.readOnly));
     }
 
     function renderTable(items) {
@@ -514,7 +526,7 @@
             detailButton.addEventListener('click', () => showDetails(item[activeResource.key]));
             actions.append(detailButton);
 
-            if (!activeResource.readOnly) {
+            if (activeResource.canEditOrDelete !== false) {
                 const editButton = document.createElement('button');
                 editButton.type = 'button';
                 editButton.className = 'btn btn-sm btn-outline-primary me-1';
@@ -533,7 +545,6 @@
     }
 
     async function loadRecords(page = 1) {
-        hideMessage();
         body.innerHTML = '<tr><td class="text-center text-secondary py-4">Cargando...</td></tr>';
         try {
             const result = await request(`${activeResource.endpoint}?page=${page}`);
@@ -572,11 +583,15 @@
     }
 
     async function startEdit(id) {
+        hideMessage();
+        const resource = activeResource;
         try {
-            const item = await request(`${activeResource.endpoint}/${id}`);
+            const item = await request(`${resource.endpoint}/${id}`);
+            if (resource !== activeResource) return;
             editingId = id;
-            renderForm();
-            activeResource.fields.forEach(field => {
+            await renderForm();
+            if (resource !== activeResource || editingId !== id) return;
+            resource.fields.forEach(field => {
                 const input = form.elements.namedItem(field.name);
                 if (input && field.name !== 'contrasena') {
                     const value = item[field.name] ?? '';
@@ -593,6 +608,7 @@
         if (!window.confirm(`¿Eliminar el registro #${id}?`)) return;
         try {
             await request(`${activeResource.endpoint}/${id}`, { method: 'DELETE' });
+            cache.clear();
             showMessage('Registro eliminado correctamente.');
             await loadRecords(activePage);
         } catch (error) {
@@ -600,38 +616,45 @@
         }
     }
 
-    resourceSelect.addEventListener('change', () => {
+    resourceSelect.addEventListener('change', async () => {
         activeResource = resources[resourceSelect.value];
         editingId = null;
         hideMessage();
         renderTableHeader();
-        renderForm();
+        await renderForm();
         loadRecords();
     });
 
-    document.getElementById('new-button').addEventListener('click', () => {
+    document.getElementById('new-button').addEventListener('click', async () => {
         editingId = null;
         hideMessage();
         form.reset();
-        renderForm();
+        await renderForm();
         document.getElementById('editor-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
-    document.getElementById('cancel-edit-button').addEventListener('click', () => {
+    document.getElementById('cancel-edit-button').addEventListener('click', async () => {
         editingId = null;
         hideMessage();
         form.reset();
-        renderForm();
+        await renderForm();
     });
 
-    document.getElementById('refresh-button').addEventListener('click', () => {
+    document.getElementById('refresh-button').addEventListener('click', async () => {
         cache.clear();
-        renderForm();
+        hideMessage();
+        await renderForm();
         loadRecords(activePage);
     });
 
-    document.getElementById('previous-button').addEventListener('click', () => loadRecords(activePage - 1));
-    document.getElementById('next-button').addEventListener('click', () => loadRecords(activePage + 1));
+    document.getElementById('previous-button').addEventListener('click', () => {
+        hideMessage();
+        loadRecords(activePage - 1);
+    });
+    document.getElementById('next-button').addEventListener('click', () => {
+        hideMessage();
+        loadRecords(activePage + 1);
+    });
     document.getElementById('close-details-button').addEventListener('click', () => document.getElementById('details-dialog').close());
 
     form.addEventListener('submit', async event => {
@@ -665,7 +688,7 @@
             showMessage(isEditing ? 'Registro actualizado correctamente.' : 'Registro creado correctamente.');
             editingId = null;
             form.reset();
-            renderForm();
+            await renderForm();
             await loadRecords(activePage);
         } catch (error) {
             if (error.validationErrors) {
@@ -678,12 +701,14 @@
         }
     });
 
-    const preferredResource = new URLSearchParams(window.location.search).get('resource');
-    if (preferredResource && resources[preferredResource]) resourceSelect.value = preferredResource;
-    activeResource = resources[resourceSelect.value];
-    renderTableHeader();
-    renderForm();
-    loadRecords();
+    (async () => {
+        const preferredResource = new URLSearchParams(window.location.search).get('resource');
+        if (preferredResource && resources[preferredResource]) resourceSelect.value = preferredResource;
+        activeResource = resources[resourceSelect.value];
+        renderTableHeader();
+        await renderForm();
+        await loadRecords();
+    })();
 })();
 </script>
 @endsection
