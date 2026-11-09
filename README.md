@@ -66,6 +66,10 @@ con solicitudes JSON. Los formularios muestran requisitos y errores junto al
 campo correspondiente en español. Los campos de fecha usan solo `AAAA-MM-DD`,
 sin hora.
 
+El texto de equivalencias del modelo de datos, mapa de navegación y tabla de
+CRUD para incorporar al documento de análisis y diseño está en
+[`docs/corte2-analisis-diseno.md`](./docs/corte2-analisis-diseno.md).
+
 En un entorno local recién migrado, visita `/setup` para crear la primera
 cuenta de coordinación. El asistente solo funciona en `local` o `testing` y
 cuando aún no existen usuarios. En otras circunstancias, usa las credenciales
